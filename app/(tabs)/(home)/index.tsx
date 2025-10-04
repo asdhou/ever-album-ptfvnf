@@ -161,24 +161,16 @@ export default function HomeScreen() {
           <IconSymbol name="trash" size={20} color={colors.error} />
         </TouchableOpacity>
       ) : (
-        <>
-          <TouchableOpacity
-            onPress={() => setViewMode(viewMode === 'photos' ? 'albums' : 'photos')}
-            style={styles.headerButton}
-          >
-            <IconSymbol 
-              name={viewMode === 'photos' ? 'folder' : 'photo'} 
-              size={20} 
-              color={colors.primary} 
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setUploadModalVisible(true)}
-            style={styles.headerButton}
-          >
-            <IconSymbol name="plus" size={20} color={colors.primary} />
-          </TouchableOpacity>
-        </>
+        <TouchableOpacity
+          onPress={() => setViewMode(viewMode === 'photos' ? 'albums' : 'photos')}
+          style={styles.headerButton}
+        >
+          <IconSymbol 
+            name={viewMode === 'photos' ? 'folder' : 'photo'} 
+            size={20} 
+            color={colors.primary} 
+          />
+        </TouchableOpacity>
       )}
     </View>
   );
@@ -207,6 +199,23 @@ export default function HomeScreen() {
     return viewMode === 'photos' ? '照片' : '相册';
   };
 
+  const renderEmptyState = () => (
+    <View style={[commonStyles.center, styles.emptyState]}>
+      <IconSymbol name="photo" size={80} color={colors.textSecondary} />
+      <Text style={[commonStyles.subtitle, styles.emptyTitle]}>暂无照片</Text>
+      <Text style={[commonStyles.textSecondary, styles.emptySubtext]}>
+        点击下方的上传按钮添加您的第一张照片
+      </Text>
+      <TouchableOpacity
+        style={[styles.emptyUploadButton]}
+        onPress={() => setUploadModalVisible(true)}
+      >
+        <IconSymbol name="plus" size={20} color={colors.card} />
+        <Text style={styles.emptyUploadText}>上传照片</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
     <SafeAreaView style={commonStyles.safeArea}>
       <Stack.Screen
@@ -221,12 +230,16 @@ export default function HomeScreen() {
 
       <View style={commonStyles.container}>
         {viewMode === 'photos' ? (
-          <PhotoGrid
-            photos={photos}
-            onPhotoPress={handlePhotoPress}
-            onPhotoLongPress={handlePhotoLongPress}
-            selectedPhotos={selectedPhotos}
-          />
+          photos.length === 0 ? (
+            renderEmptyState()
+          ) : (
+            <PhotoGrid
+              photos={photos}
+              onPhotoPress={handlePhotoPress}
+              onPhotoLongPress={handlePhotoLongPress}
+              selectedPhotos={selectedPhotos}
+            />
+          )
         ) : (
           <ScrollView 
             style={styles.albumsContainer}
@@ -263,6 +276,17 @@ export default function HomeScreen() {
               </View>
             )}
           </ScrollView>
+        )}
+
+        {/* Floating Upload Button */}
+        {!selectionMode && (
+          <TouchableOpacity
+            style={styles.floatingUploadButton}
+            onPress={() => setUploadModalVisible(true)}
+            activeOpacity={0.8}
+          >
+            <IconSymbol name="plus" size={28} color={colors.card} />
+          </TouchableOpacity>
         )}
       </View>
 
@@ -342,5 +366,45 @@ const styles = StyleSheet.create({
   emptySubtext: {
     marginTop: 8,
     textAlign: 'center',
+  },
+  emptyState: {
+    flex: 1,
+    paddingHorizontal: 40,
+  },
+  emptyTitle: {
+    marginTop: 24,
+    textAlign: 'center',
+    color: colors.textSecondary,
+  },
+  emptyUploadButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.primary,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 25,
+    marginTop: 24,
+    boxShadow: '0px 4px 12px rgba(63, 81, 181, 0.3)',
+    elevation: 4,
+  },
+  emptyUploadText: {
+    marginLeft: 8,
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.card,
+  },
+  floatingUploadButton: {
+    position: 'absolute',
+    bottom: 100, // Above the tab bar
+    right: 20,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: colors.secondary,
+    justifyContent: 'center',
+    alignItems: 'center',
+    boxShadow: '0px 6px 16px rgba(233, 30, 99, 0.4)',
+    elevation: 8,
+    zIndex: 1000,
   },
 });
