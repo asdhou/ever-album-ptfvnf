@@ -12,6 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { IconSymbol } from '@/components/IconSymbol';
 import { colors, commonStyles, buttonStyles } from '@/styles/commonStyles';
+import { useRouter } from 'expo-router';
 
 interface StorageInfo {
   used: number;
@@ -20,6 +21,7 @@ interface StorageInfo {
 }
 
 export default function ProfileScreen() {
+  const router = useRouter();
   const [autoBackup, setAutoBackup] = useState(true);
   const [highQuality, setHighQuality] = useState(true);
   const [notifications, setNotifications] = useState(true);
@@ -74,6 +76,10 @@ export default function ProfileScreen() {
         { text: '退出', style: 'destructive', onPress: () => console.log('Sign out') },
       ]
     );
+  };
+
+  const handleFamilySharing = () => {
+    router.push('/family');
   };
 
   return (
@@ -195,9 +201,12 @@ export default function ProfileScreen() {
 
         {/* Account Actions */}
         <View style={[commonStyles.card, styles.section]}>
-          <TouchableOpacity style={styles.actionItem}>
-            <IconSymbol name="person.2" size={20} color={colors.textSecondary} />
+          <TouchableOpacity style={styles.actionItem} onPress={handleFamilySharing}>
+            <IconSymbol name="person.2" size={20} color={colors.primary} />
             <Text style={styles.actionText}>家庭共享</Text>
+            <View style={styles.actionBadge}>
+              <Text style={styles.actionBadgeText}>新功能</Text>
+            </View>
             <IconSymbol name="chevron.right" size={16} color={colors.textSecondary} />
           </TouchableOpacity>
 
@@ -348,5 +357,17 @@ const styles = StyleSheet.create({
     color: colors.text,
     marginLeft: 12,
     flex: 1,
+  },
+  actionBadge: {
+    backgroundColor: colors.secondary,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 10,
+    marginRight: 8,
+  },
+  actionBadgeText: {
+    fontSize: 10,
+    color: colors.card,
+    fontWeight: '600',
   },
 });

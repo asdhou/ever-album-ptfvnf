@@ -1,56 +1,61 @@
 
 import React from 'react';
-import { Platform } from 'react-native';
-import { NativeTabs, Icon, Label } from 'expo-router/unstable-native-tabs';
-import { Stack } from 'expo-router';
-import FloatingTabBar, { TabBarItem } from '@/components/FloatingTabBar';
+import { Tabs } from 'expo-router';
+import FloatingTabBar from '@/components/FloatingTabBar';
 import { colors } from '@/styles/commonStyles';
 
 export default function TabLayout() {
-  // Define the tabs configuration
-  const tabs: TabBarItem[] = [
+  const tabs = [
     {
       name: '(home)',
-      route: '/(tabs)/(home)/',
-      icon: 'photo.on.rectangle',
-      label: '照片',
+      title: '照片',
+      icon: 'photo',
+      route: '/(home)',
+    },
+    {
+      name: 'family',
+      title: '家庭共享',
+      icon: 'person.2',
+      route: '/family',
     },
     {
       name: 'profile',
-      route: '/(tabs)/profile',
-      icon: 'person.fill',
-      label: '我的',
+      title: '我的',
+      icon: 'person',
+      route: '/profile',
     },
   ];
 
-  // Use NativeTabs for iOS, custom FloatingTabBar for Android and Web
-  if (Platform.OS === 'ios') {
-    return (
-      <NativeTabs>
-        <NativeTabs.Trigger name="(home)">
-          <Icon sf="photo.on.rectangle" drawable="ic_photo" />
-          <Label>照片</Label>
-        </NativeTabs.Trigger>
-        <NativeTabs.Trigger name="profile">
-          <Icon sf="person.fill" drawable="ic_profile" />
-          <Label>我的</Label>
-        </NativeTabs.Trigger>
-      </NativeTabs>
-    );
-  }
-
-  // For Android and Web, use Stack navigation with custom floating tab bar
   return (
     <>
-      <Stack
+      <Tabs
         screenOptions={{
           headerShown: false,
-          animation: 'none', // Remove fade animation to prevent black screen flash
+          tabBarStyle: { display: 'none' }, // Hide default tab bar
         }}
       >
-        <Stack.Screen name="(home)" />
-        <Stack.Screen name="profile" />
-      </Stack>
+        <Tabs.Screen
+          name="(home)"
+          options={{
+            title: '照片',
+            headerShown: false,
+          }}
+        />
+        <Tabs.Screen
+          name="family"
+          options={{
+            title: '家庭共享',
+            headerShown: false,
+          }}
+        />
+        <Tabs.Screen
+          name="profile"
+          options={{
+            title: '我的',
+            headerShown: false,
+          }}
+        />
+      </Tabs>
       <FloatingTabBar tabs={tabs} />
     </>
   );
