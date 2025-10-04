@@ -1,161 +1,346 @@
-import React from "react";
-import { Stack, Link } from "expo-router";
-import { FlatList, Pressable, StyleSheet, View, Text, Alert, Platform } from "react-native";
-import { IconSymbol } from "@/components/IconSymbol";
-import { GlassView } from "expo-glass-effect";
-import { useTheme } from "@react-navigation/native";
 
-const ICON_COLOR = "#007AFF";
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  Platform,
+  ScrollView,
+} from 'react-native';
+import { Stack } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import * as ImagePicker from 'expo-image-picker';
+import { IconSymbol } from '@/components/IconSymbol';
+import PhotoGrid from '@/components/PhotoGrid';
+import AlbumCard from '@/components/AlbumCard';
+import PhotoUploadModal from '@/components/PhotoUploadModal';
+import CreateAlbumModal from '@/components/CreateAlbumModal';
+import { colors, commonStyles } from '@/styles/commonStyles';
+
+interface Photo {
+  id: string;
+  uri: string;
+  name: string;
+  date: string;
+  size: number;
+  album?: string;
+}
+
+interface Album {
+  id: string;
+  name: string;
+  photoCount: number;
+  coverPhoto?: string;
+  createdAt: string;
+}
 
 export default function HomeScreen() {
-  const theme = useTheme();
-  const modalDemos = [
-    {
-      title: "Standard Modal",
-      description: "Full screen modal presentation",
-      route: "/modal",
-      color: "#007AFF",
-    },
-    {
-      title: "Form Sheet",
-      description: "Bottom sheet with detents and grabber",
-      route: "/formsheet",
-      color: "#34C759",
-    },
-    {
-      title: "Transparent Modal",
-      description: "Overlay without obscuring background",
-      route: "/transparent-modal",
-      color: "#FF9500",
-    }
-  ];
+  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [albums, setAlbums] = useState<Album[]>([]);
+  const [selectedPhotos, setSelectedPhotos] = useState<string[]>([]);
+  const [viewMode, setViewMode] = useState<'photos' | 'albums'>('photos');
+  const [uploadModalVisible, setUploadModalVisible] = useState(false);
+  const [createAlbumModalVisible, setCreateAlbumModalVisible] = useState(false);
+  const [selectionMode, setSelectionMode] = useState(false);
 
-  const renderModalDemo = ({ item }: { item: (typeof modalDemos)[0] }) => (
-    <GlassView style={[
-      styles.demoCard,
-      Platform.OS !== 'ios' && { backgroundColor: theme.dark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.05)' }
-    ]} glassEffectStyle="regular">
-      <View style={[styles.demoIcon, { backgroundColor: item.color }]}>
-        <IconSymbol name="square.grid.3x3" color="white" size={24} />
-      </View>
-      <View style={styles.demoContent}>
-        <Text style={[styles.demoTitle, { color: theme.colors.text }]}>{item.title}</Text>
-        <Text style={[styles.demoDescription, { color: theme.dark ? '#98989D' : '#666' }]}>{item.description}</Text>
-      </View>
-      <Link href={item.route as any} asChild>
-        <Pressable>
-          <GlassView style={[
-            styles.tryButton,
-            Platform.OS !== 'ios' && { backgroundColor: theme.dark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.08)' }
-          ]} glassEffectStyle="clear">
-            <Text style={[styles.tryButtonText, { color: theme.colors.primary }]}>Try It</Text>
-          </GlassView>
-        </Pressable>
-      </Link>
-    </GlassView>
-  );
+  // Initialize with some sample albums
+  useEffect(() => {
+    const sampleAlbums: Album[] = [
+      {
+        id: '1',
+        name: 'Family Photos',
+        photoCount: 0,
+        createdAt: new Date().toISOString(),
+      },
+      {
+        id: '2',
+        name: 'Vacation 2024',
+        photoCount: 0,
+        createdAt: new Date().toISOString(),
+      },
+    ];
+    setAlbums(sampleAlbums);
+  }, []);
+
+  const handlePhotosSelected = (selectedAssets: ImagePicker.ImagePickerAsset[]) => {
+    console.log('Photos selected:', selectedAssets.length);
+    
+    const newPhotos: Photo[] = selectedAssets.map((asset, index) => ({
+      id: `photo_${Date.now()}_${index}`,
+      uri: asset.uri,
+      name: asset.fileName || `Photo ${Date.now()}`,
+      date: new Date().toISOString(),
+      size: asset.fileSize || 0,
+    }));
+
+    setPhotos(prev => [...newPhotos, ...prev]);
+    
+    Alert.alert(
+      'Success',
+      `${newPhotos.length} photo${newPhotos.length > 1 ? 's' : ''} added successfully!`
+    );
+  };
+
+  const handlePhotoPress = (photo: Photo) => {
+    if (selectionMode) {
+      togglePhotoSelection(photo.id);
+    } else {
+      // TODO: Open photo viewer
+      console.log('Open photo viewer for:', photo.name);
+      Alert.alert('Photo Viewer', `Opening ${photo.name}`);
+    }
+  };
+
+  const handlePhotoLongPress = (photo: Photo) => {
+    if (!selectionMode) {
+      setSelectionMode(true);
+      setSelectedPhotos([photo.id]);
+    }
+  };
+
+  const togglePhotoSelection = (photoId: string) => {
+    setSelectedPhotos(prev => {
+      if (prev.includes(photoId)) {
+        const newSelection = prev.filter(id => id !== photoId);
+        if (newSelection.length === 0) {
+          setSelectionMode(false);
+        }
+        return newSelection;
+      } else {
+        return [...prev, photoId];
+      }
+    });
+  };
+
+  const handleCreateAlbum = (name: string) => {
+    const newAlbum: Album = {
+      id: `album_${Date.now()}`,
+      name,
+      photoCount: 0,
+      createdAt: new Date().toISOString(),
+    };
+
+    setAlbums(prev => [newAlbum, ...prev]);
+    Alert.alert('Success', `Album "${name}" created successfully!`);
+  };
+
+  const handleAlbumPress = (album: Album) => {
+    // TODO: Navigate to album view
+    console.log('Open album:', album.name);
+    Alert.alert('Album View', `Opening album: ${album.name}`);
+  };
+
+  const deleteSelectedPhotos = () => {
+    Alert.alert(
+      'Delete Photos',
+      `Are you sure you want to delete ${selectedPhotos.length} photo${selectedPhotos.length > 1 ? 's' : ''}?`,
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => {
+            setPhotos(prev => prev.filter(photo => !selectedPhotos.includes(photo.id)));
+            setSelectedPhotos([]);
+            setSelectionMode(false);
+          },
+        },
+      ]
+    );
+  };
 
   const renderHeaderRight = () => (
-    <Pressable
-      onPress={() => Alert.alert("Not Implemented", "This feature is not implemented yet")}
-      style={styles.headerButtonContainer}
-    >
-      <IconSymbol name="plus" color={theme.colors.primary} />
-    </Pressable>
+    <View style={styles.headerButtons}>
+      {selectionMode ? (
+        <TouchableOpacity
+          onPress={deleteSelectedPhotos}
+          style={styles.headerButton}
+        >
+          <IconSymbol name="trash" size={20} color={colors.error} />
+        </TouchableOpacity>
+      ) : (
+        <>
+          <TouchableOpacity
+            onPress={() => setViewMode(viewMode === 'photos' ? 'albums' : 'photos')}
+            style={styles.headerButton}
+          >
+            <IconSymbol 
+              name={viewMode === 'photos' ? 'folder' : 'photo'} 
+              size={20} 
+              color={colors.primary} 
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => setUploadModalVisible(true)}
+            style={styles.headerButton}
+          >
+            <IconSymbol name="plus" size={20} color={colors.primary} />
+          </TouchableOpacity>
+        </>
+      )}
+    </View>
   );
 
-  const renderHeaderLeft = () => (
-    <Pressable
-      onPress={() => Alert.alert("Not Implemented", "This feature is not implemented yet")}
-      style={styles.headerButtonContainer}
-    >
-      <IconSymbol
-        name="gear"
-        color={theme.colors.primary}
-      />
-    </Pressable>
-  );
+  const renderHeaderLeft = () => {
+    if (selectionMode) {
+      return (
+        <TouchableOpacity
+          onPress={() => {
+            setSelectionMode(false);
+            setSelectedPhotos([]);
+          }}
+          style={styles.headerButton}
+        >
+          <Text style={styles.cancelText}>Cancel</Text>
+        </TouchableOpacity>
+      );
+    }
+    return null;
+  };
+
+  const getTitle = () => {
+    if (selectionMode) {
+      return `${selectedPhotos.length} Selected`;
+    }
+    return viewMode === 'photos' ? 'Photos' : 'Albums';
+  };
 
   return (
-    <>
-      {Platform.OS === 'ios' && (
-        <Stack.Screen
-          options={{
-            title: "Building the app...",
-            headerRight: renderHeaderRight,
-            headerLeft: renderHeaderLeft,
-          }}
-        />
-      )}
-      <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-        <FlatList
-          data={modalDemos}
-          renderItem={renderModalDemo}
-          keyExtractor={(item) => item.route}
-          contentContainerStyle={[
-            styles.listContainer,
-            Platform.OS !== 'ios' && styles.listContainerWithTabBar
-          ]}
-          contentInsetAdjustmentBehavior="automatic"
-          showsVerticalScrollIndicator={false}
-        />
+    <SafeAreaView style={commonStyles.safeArea}>
+      <Stack.Screen
+        options={{
+          title: getTitle(),
+          headerRight: renderHeaderRight,
+          headerLeft: renderHeaderLeft,
+          headerStyle: { backgroundColor: colors.card },
+          headerTintColor: colors.text,
+        }}
+      />
+
+      <View style={commonStyles.container}>
+        {viewMode === 'photos' ? (
+          <PhotoGrid
+            photos={photos}
+            onPhotoPress={handlePhotoPress}
+            onPhotoLongPress={handlePhotoLongPress}
+            selectedPhotos={selectedPhotos}
+          />
+        ) : (
+          <ScrollView 
+            style={styles.albumsContainer}
+            contentContainerStyle={styles.albumsContent}
+          >
+            <View style={styles.albumsHeader}>
+              <Text style={commonStyles.subtitle}>My Albums</Text>
+              <TouchableOpacity
+                onPress={() => setCreateAlbumModalVisible(true)}
+                style={styles.createAlbumButton}
+              >
+                <IconSymbol name="plus.circle.fill" size={24} color={colors.primary} />
+                <Text style={styles.createAlbumText}>Create Album</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.albumsGrid}>
+              {albums.map((album) => (
+                <AlbumCard
+                  key={album.id}
+                  album={album}
+                  onPress={handleAlbumPress}
+                />
+              ))}
+            </View>
+
+            {albums.length === 0 && (
+              <View style={[commonStyles.center, styles.emptyAlbums]}>
+                <IconSymbol name="folder" size={64} color={colors.textSecondary} />
+                <Text style={[commonStyles.text, styles.emptyText]}>No albums yet</Text>
+                <Text style={[commonStyles.textSecondary, styles.emptySubtext]}>
+                  Create your first album to organize your photos
+                </Text>
+              </View>
+            )}
+          </ScrollView>
+        )}
       </View>
-    </>
+
+      <PhotoUploadModal
+        visible={uploadModalVisible}
+        onClose={() => setUploadModalVisible(false)}
+        onPhotosSelected={handlePhotosSelected}
+      />
+
+      <CreateAlbumModal
+        visible={createAlbumModalVisible}
+        onClose={() => setCreateAlbumModalVisible(false)}
+        onCreateAlbum={handleCreateAlbum}
+      />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // backgroundColor handled dynamically
-  },
-  listContainer: {
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-  },
-  listContainerWithTabBar: {
-    paddingBottom: 100, // Extra padding for floating tab bar
-  },
-  demoCard: {
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
+  headerButtons: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  demoIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
+  headerButton: {
+    padding: 8,
+    marginLeft: 8,
   },
-  demoContent: {
+  cancelText: {
+    color: colors.primary,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  albumsContainer: {
     flex: 1,
   },
-  demoTitle: {
+  albumsContent: {
+    padding: 16,
+    paddingBottom: 100, // Space for floating tab bar
+  },
+  albumsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  createAlbumButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: colors.card,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)',
+    elevation: 2,
+  },
+  createAlbumText: {
+    marginLeft: 6,
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.primary,
+  },
+  albumsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  emptyAlbums: {
+    flex: 1,
+    paddingVertical: 60,
+  },
+  emptyText: {
+    marginTop: 16,
     fontSize: 18,
     fontWeight: '600',
-    marginBottom: 4,
-    // color handled dynamically
+    textAlign: 'center',
   },
-  demoDescription: {
-    fontSize: 14,
-    lineHeight: 18,
-    // color handled dynamically
-  },
-  headerButtonContainer: {
-    padding: 6,
-  },
-  tryButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 6,
-  },
-  tryButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    // color handled dynamically
+  emptySubtext: {
+    marginTop: 8,
+    textAlign: 'center',
   },
 });
