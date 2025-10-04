@@ -30,8 +30,8 @@ export default function PhotoUploadModal({
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
       Alert.alert(
-        'Permission Required',
-        'Please grant permission to access your photo library to upload photos.'
+        '需要权限',
+        '请授予访问相册的权限以上传照片。'
       );
       return false;
     }
@@ -57,7 +57,7 @@ export default function PhotoUploadModal({
       }
     } catch (error) {
       console.log('Error picking images:', error);
-      Alert.alert('Error', 'Failed to pick images from library');
+      Alert.alert('错误', '从相册选择图片失败');
     } finally {
       setIsUploading(false);
     }
@@ -67,8 +67,8 @@ export default function PhotoUploadModal({
     const { status } = await ImagePicker.requestCameraPermissionsAsync();
     if (status !== 'granted') {
       Alert.alert(
-        'Permission Required',
-        'Please grant permission to access your camera to take photos.'
+        '需要权限',
+        '请授予访问相机的权限以拍摄照片。'
       );
       return;
     }
@@ -87,7 +87,7 @@ export default function PhotoUploadModal({
       }
     } catch (error) {
       console.log('Error taking photo:', error);
-      Alert.alert('Error', 'Failed to take photo');
+      Alert.alert('错误', '拍摄照片失败');
     } finally {
       setIsUploading(false);
     }
@@ -103,7 +103,7 @@ export default function PhotoUploadModal({
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.header}>
-            <Text style={styles.title}>Add Photos</Text>
+            <Text style={styles.title}>添加照片</Text>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
               <IconSymbol name="xmark" size={20} color={colors.textSecondary} />
             </TouchableOpacity>
@@ -117,7 +117,7 @@ export default function PhotoUploadModal({
             >
               <IconSymbol name="photo.on.rectangle" size={24} color={colors.card} />
               <Text style={[commonStyles.buttonText, styles.optionText]}>
-                Choose from Library
+                从相册选择
               </Text>
             </TouchableOpacity>
 
@@ -128,14 +128,14 @@ export default function PhotoUploadModal({
             >
               <IconSymbol name="camera" size={24} color={colors.card} />
               <Text style={[commonStyles.buttonText, styles.optionText]}>
-                Take Photo
+                拍摄照片
               </Text>
             </TouchableOpacity>
 
             {isUploading && (
               <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color={colors.primary} />
-                <Text style={styles.loadingText}>Processing photos...</Text>
+                <Text style={styles.loadingText}>正在处理照片...</Text>
               </View>
             )}
           </View>

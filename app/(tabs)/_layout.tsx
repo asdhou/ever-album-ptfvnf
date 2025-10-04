@@ -13,13 +13,13 @@ export default function TabLayout() {
       name: '(home)',
       route: '/(tabs)/(home)/',
       icon: 'photo.on.rectangle',
-      label: 'Photos',
+      label: '照片',
     },
     {
       name: 'profile',
       route: '/(tabs)/profile',
       icon: 'person.fill',
-      label: 'Profile',
+      label: '我的',
     },
   ];
 
@@ -29,11 +29,11 @@ export default function TabLayout() {
       <NativeTabs>
         <NativeTabs.Trigger name="(home)">
           <Icon sf="photo.on.rectangle" drawable="ic_photo" />
-          <Label>Photos</Label>
+          <Label>照片</Label>
         </NativeTabs.Trigger>
         <NativeTabs.Trigger name="profile">
           <Icon sf="person.fill" drawable="ic_profile" />
-          <Label>Profile</Label>
+          <Label>我的</Label>
         </NativeTabs.Trigger>
       </NativeTabs>
     );

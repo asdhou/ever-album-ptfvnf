@@ -28,6 +28,11 @@ const { width } = Dimensions.get('window');
 const cardWidth = (width - 48) / 2;
 
 export default function AlbumCard({ album, onPress }: AlbumCardProps) {
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return `创建于 ${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+  };
+
   return (
     <TouchableOpacity
       style={[styles.container, { width: cardWidth }]}
@@ -51,7 +56,7 @@ export default function AlbumCard({ album, onPress }: AlbumCardProps) {
           {album.name}
         </Text>
         <Text style={styles.createdDate}>
-          Created {new Date(album.createdAt).toLocaleDateString()}
+          {formatDate(album.createdAt)}
         </Text>
       </View>
     </TouchableOpacity>

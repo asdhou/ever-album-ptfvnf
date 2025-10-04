@@ -34,44 +34,44 @@ export default function ProfileScreen() {
 
   const handleUpgrade = () => {
     Alert.alert(
-      'Upgrade Storage',
-      'Choose your storage plan:\n\n• 5GB - $2.99/month\n• 15GB - $5.99/month\n• 50GB - $9.99/month\n• Unlimited - $19.99/month',
+      '升级存储空间',
+      '选择您的存储套餐：\n\n• 5GB - ¥19.9/月\n• 15GB - ¥39.9/月\n• 50GB - ¥69.9/月\n• 无限制 - ¥129.9/月',
       [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Choose Plan', onPress: () => console.log('Navigate to upgrade') },
+        { text: '取消', style: 'cancel' },
+        { text: '选择套餐', onPress: () => console.log('Navigate to upgrade') },
       ]
     );
   };
 
   const handleBackup = () => {
     Alert.alert(
-      'Backup Photos',
-      'Start backing up your photos to the cloud?',
+      '备份照片',
+      '开始将您的照片备份到云端？',
       [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Start Backup', onPress: () => console.log('Start backup') },
+        { text: '取消', style: 'cancel' },
+        { text: '开始备份', onPress: () => console.log('Start backup') },
       ]
     );
   };
 
   const handleExport = () => {
     Alert.alert(
-      'Export Photos',
-      'Export all your photos to device storage?',
+      '导出照片',
+      '将所有照片导出到设备存储？',
       [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Export', onPress: () => console.log('Export photos') },
+        { text: '取消', style: 'cancel' },
+        { text: '导出', onPress: () => console.log('Export photos') },
       ]
     );
   };
 
   const handleSignOut = () => {
     Alert.alert(
-      'Sign Out',
-      'Are you sure you want to sign out?',
+      '退出登录',
+      '确定要退出登录吗？',
       [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Sign Out', style: 'destructive', onPress: () => console.log('Sign out') },
+        { text: '取消', style: 'cancel' },
+        { text: '退出', style: 'destructive', onPress: () => console.log('Sign out') },
       ]
     );
   };
@@ -91,19 +91,19 @@ export default function ProfileScreen() {
               <IconSymbol name="camera.fill" size={16} color={colors.card} />
             </TouchableOpacity>
           </View>
-          <Text style={styles.name}>John Doe</Text>
-          <Text style={styles.email}>john.doe@example.com</Text>
+          <Text style={styles.name}>张三</Text>
+          <Text style={styles.email}>zhangsan@example.com</Text>
           <TouchableOpacity style={[buttonStyles.outline, styles.editProfileButton]}>
-            <Text style={commonStyles.buttonTextOutline}>Edit Profile</Text>
+            <Text style={commonStyles.buttonTextOutline}>编辑资料</Text>
           </TouchableOpacity>
         </View>
 
         {/* Storage Info */}
         <View style={[commonStyles.card, styles.section]}>
           <View style={[commonStyles.row, commonStyles.spaceBetween]}>
-            <Text style={commonStyles.subtitle}>Storage</Text>
+            <Text style={commonStyles.subtitle}>存储空间</Text>
             <TouchableOpacity onPress={handleUpgrade}>
-              <Text style={styles.upgradeText}>Upgrade</Text>
+              <Text style={styles.upgradeText}>升级</Text>
             </TouchableOpacity>
           </View>
           
@@ -112,7 +112,7 @@ export default function ProfileScreen() {
           </View>
           
           <Text style={styles.storageText}>
-            {storageInfo.used} {storageInfo.unit} of {storageInfo.total} {storageInfo.unit} used
+            已使用 {storageInfo.used} {storageInfo.unit}，共 {storageInfo.total} {storageInfo.unit}
           </Text>
           
           <View style={styles.storageActions}>
@@ -121,7 +121,7 @@ export default function ProfileScreen() {
               onPress={handleBackup}
             >
               <IconSymbol name="icloud.and.arrow.up" size={16} color={colors.card} />
-              <Text style={[commonStyles.buttonText, styles.buttonText]}>Backup</Text>
+              <Text style={[commonStyles.buttonText, styles.buttonText]}>备份</Text>
             </TouchableOpacity>
             
             <TouchableOpacity 
@@ -129,22 +129,22 @@ export default function ProfileScreen() {
               onPress={handleExport}
             >
               <IconSymbol name="square.and.arrow.up" size={16} color={colors.primary} />
-              <Text style={[commonStyles.buttonTextOutline, styles.buttonText]}>Export</Text>
+              <Text style={[commonStyles.buttonTextOutline, styles.buttonText]}>导出</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Settings */}
         <View style={[commonStyles.card, styles.section]}>
-          <Text style={commonStyles.subtitle}>Settings</Text>
+          <Text style={commonStyles.subtitle}>设置</Text>
           
           <View style={styles.settingItem}>
             <View style={styles.settingInfo}>
               <IconSymbol name="icloud" size={20} color={colors.textSecondary} />
               <View style={styles.settingText}>
-                <Text style={styles.settingTitle}>Auto Backup</Text>
+                <Text style={styles.settingTitle}>自动备份</Text>
                 <Text style={styles.settingDescription}>
-                  Automatically backup new photos
+                  自动备份新照片
                 </Text>
               </View>
             </View>
@@ -160,9 +160,9 @@ export default function ProfileScreen() {
             <View style={styles.settingInfo}>
               <IconSymbol name="photo" size={20} color={colors.textSecondary} />
               <View style={styles.settingText}>
-                <Text style={styles.settingTitle}>High Quality Upload</Text>
+                <Text style={styles.settingTitle}>高质量上传</Text>
                 <Text style={styles.settingDescription}>
-                  Upload original quality photos
+                  上传原始质量照片
                 </Text>
               </View>
             </View>
@@ -178,9 +178,9 @@ export default function ProfileScreen() {
             <View style={styles.settingInfo}>
               <IconSymbol name="bell" size={20} color={colors.textSecondary} />
               <View style={styles.settingText}>
-                <Text style={styles.settingTitle}>Notifications</Text>
+                <Text style={styles.settingTitle}>通知</Text>
                 <Text style={styles.settingDescription}>
-                  Receive backup and sharing notifications
+                  接收备份和分享通知
                 </Text>
               </View>
             </View>
@@ -197,7 +197,7 @@ export default function ProfileScreen() {
         <View style={[commonStyles.card, styles.section]}>
           <TouchableOpacity style={styles.actionItem}>
             <IconSymbol name="person.2" size={20} color={colors.textSecondary} />
-            <Text style={styles.actionText}>Family Sharing</Text>
+            <Text style={styles.actionText}>家庭共享</Text>
             <IconSymbol name="chevron.right" size={16} color={colors.textSecondary} />
           </TouchableOpacity>
 
@@ -205,7 +205,7 @@ export default function ProfileScreen() {
 
           <TouchableOpacity style={styles.actionItem}>
             <IconSymbol name="shield" size={20} color={colors.textSecondary} />
-            <Text style={styles.actionText}>Privacy & Security</Text>
+            <Text style={styles.actionText}>隐私与安全</Text>
             <IconSymbol name="chevron.right" size={16} color={colors.textSecondary} />
           </TouchableOpacity>
 
@@ -213,7 +213,7 @@ export default function ProfileScreen() {
 
           <TouchableOpacity style={styles.actionItem}>
             <IconSymbol name="questionmark.circle" size={20} color={colors.textSecondary} />
-            <Text style={styles.actionText}>Help & Support</Text>
+            <Text style={styles.actionText}>帮助与支持</Text>
             <IconSymbol name="chevron.right" size={16} color={colors.textSecondary} />
           </TouchableOpacity>
 
@@ -221,7 +221,7 @@ export default function ProfileScreen() {
 
           <TouchableOpacity style={styles.actionItem} onPress={handleSignOut}>
             <IconSymbol name="rectangle.portrait.and.arrow.right" size={20} color={colors.error} />
-            <Text style={[styles.actionText, { color: colors.error }]}>Sign Out</Text>
+            <Text style={[styles.actionText, { color: colors.error }]}>退出登录</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

@@ -50,13 +50,13 @@ export default function HomeScreen() {
     const sampleAlbums: Album[] = [
       {
         id: '1',
-        name: 'Family Photos',
+        name: '家庭照片',
         photoCount: 0,
         createdAt: new Date().toISOString(),
       },
       {
         id: '2',
-        name: 'Vacation 2024',
+        name: '2024年旅行',
         photoCount: 0,
         createdAt: new Date().toISOString(),
       },
@@ -70,7 +70,7 @@ export default function HomeScreen() {
     const newPhotos: Photo[] = selectedAssets.map((asset, index) => ({
       id: `photo_${Date.now()}_${index}`,
       uri: asset.uri,
-      name: asset.fileName || `Photo ${Date.now()}`,
+      name: asset.fileName || `照片 ${Date.now()}`,
       date: new Date().toISOString(),
       size: asset.fileSize || 0,
     }));
@@ -78,8 +78,8 @@ export default function HomeScreen() {
     setPhotos(prev => [...newPhotos, ...prev]);
     
     Alert.alert(
-      'Success',
-      `${newPhotos.length} photo${newPhotos.length > 1 ? 's' : ''} added successfully!`
+      '成功',
+      `已成功添加 ${newPhotos.length} 张照片！`
     );
   };
 
@@ -89,7 +89,7 @@ export default function HomeScreen() {
     } else {
       // TODO: Open photo viewer
       console.log('Open photo viewer for:', photo.name);
-      Alert.alert('Photo Viewer', `Opening ${photo.name}`);
+      Alert.alert('照片查看器', `正在打开 ${photo.name}`);
     }
   };
 
@@ -123,23 +123,23 @@ export default function HomeScreen() {
     };
 
     setAlbums(prev => [newAlbum, ...prev]);
-    Alert.alert('Success', `Album "${name}" created successfully!`);
+    Alert.alert('成功', `相册"${name}"创建成功！`);
   };
 
   const handleAlbumPress = (album: Album) => {
     // TODO: Navigate to album view
     console.log('Open album:', album.name);
-    Alert.alert('Album View', `Opening album: ${album.name}`);
+    Alert.alert('相册查看', `正在打开相册：${album.name}`);
   };
 
   const deleteSelectedPhotos = () => {
     Alert.alert(
-      'Delete Photos',
-      `Are you sure you want to delete ${selectedPhotos.length} photo${selectedPhotos.length > 1 ? 's' : ''}?`,
+      '删除照片',
+      `确定要删除 ${selectedPhotos.length} 张照片吗？`,
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: '取消', style: 'cancel' },
         {
-          text: 'Delete',
+          text: '删除',
           style: 'destructive',
           onPress: () => {
             setPhotos(prev => prev.filter(photo => !selectedPhotos.includes(photo.id)));
@@ -193,7 +193,7 @@ export default function HomeScreen() {
           }}
           style={styles.headerButton}
         >
-          <Text style={styles.cancelText}>Cancel</Text>
+          <Text style={styles.cancelText}>取消</Text>
         </TouchableOpacity>
       );
     }
@@ -202,9 +202,9 @@ export default function HomeScreen() {
 
   const getTitle = () => {
     if (selectionMode) {
-      return `${selectedPhotos.length} Selected`;
+      return `已选择 ${selectedPhotos.length} 张`;
     }
-    return viewMode === 'photos' ? 'Photos' : 'Albums';
+    return viewMode === 'photos' ? '照片' : '相册';
   };
 
   return (
@@ -233,13 +233,13 @@ export default function HomeScreen() {
             contentContainerStyle={styles.albumsContent}
           >
             <View style={styles.albumsHeader}>
-              <Text style={commonStyles.subtitle}>My Albums</Text>
+              <Text style={commonStyles.subtitle}>我的相册</Text>
               <TouchableOpacity
                 onPress={() => setCreateAlbumModalVisible(true)}
                 style={styles.createAlbumButton}
               >
                 <IconSymbol name="plus.circle.fill" size={24} color={colors.primary} />
-                <Text style={styles.createAlbumText}>Create Album</Text>
+                <Text style={styles.createAlbumText}>创建相册</Text>
               </TouchableOpacity>
             </View>
 
@@ -256,9 +256,9 @@ export default function HomeScreen() {
             {albums.length === 0 && (
               <View style={[commonStyles.center, styles.emptyAlbums]}>
                 <IconSymbol name="folder" size={64} color={colors.textSecondary} />
-                <Text style={[commonStyles.text, styles.emptyText]}>No albums yet</Text>
+                <Text style={[commonStyles.text, styles.emptyText]}>暂无相册</Text>
                 <Text style={[commonStyles.textSecondary, styles.emptySubtext]}>
-                  Create your first album to organize your photos
+                  创建您的第一个相册来整理照片
                 </Text>
               </View>
             )}

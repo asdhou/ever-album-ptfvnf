@@ -27,7 +27,7 @@ export default function CreateAlbumModal({
 
   const handleCreate = () => {
     if (!albumName.trim()) {
-      Alert.alert('Error', 'Please enter an album name');
+      Alert.alert('错误', '请输入相册名称');
       return;
     }
 
@@ -51,19 +51,19 @@ export default function CreateAlbumModal({
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.header}>
-            <Text style={styles.title}>Create Album</Text>
+            <Text style={styles.title}>创建相册</Text>
             <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
               <IconSymbol name="xmark" size={20} color={colors.textSecondary} />
             </TouchableOpacity>
           </View>
 
           <View style={styles.content}>
-            <Text style={styles.label}>Album Name</Text>
+            <Text style={styles.label}>相册名称</Text>
             <TextInput
               style={[commonStyles.input, styles.input]}
               value={albumName}
               onChangeText={setAlbumName}
-              placeholder="Enter album name"
+              placeholder="输入相册名称"
               placeholderTextColor={colors.textSecondary}
               autoFocus
               maxLength={50}
@@ -74,14 +74,14 @@ export default function CreateAlbumModal({
                 style={[buttonStyles.outline, styles.button]}
                 onPress={handleClose}
               >
-                <Text style={commonStyles.buttonTextOutline}>Cancel</Text>
+                <Text style={commonStyles.buttonTextOutline}>取消</Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={[buttonStyles.primary, styles.button]}
                 onPress={handleCreate}
               >
-                <Text style={commonStyles.buttonText}>Create</Text>
+                <Text style={commonStyles.buttonText}>创建</Text>
               </TouchableOpacity>
             </View>
           </View>
